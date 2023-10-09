@@ -80,20 +80,25 @@ export default class Calendar extends Component {
         </TouchableOpacity>
         <View>
           <Text>SELECTED DATE: {startDate}</Text>
-          <Text>Start Time: {startTime}</Text>
-          
-          <Text>End Time: {endTime}</Text>
-          
-      
         </View>
-        <DateTimePicker
-            onChange={(selectedTime) => this.handleStartTimePicked(selectedTime)}
-            value={selectedStartTime || new Date()}
-          />
-          <DateTimePicker
-            onChange={(selectedTime) => this.handleEndTimePicked(selectedTime)}
-            value={selectedEndTime || new Date()}
-          />  
+        <View style={styles.dateContainer}>
+          <View style={{width: 200}}>
+            <Text>Start Time: {startTime}</Text>
+            <DateTimePicker
+              style={{width: '45vw'}}
+              onChange={(selectedTime) => this.handleStartTimePicked(selectedTime)}
+              value={selectedStartTime || new Date()}
+            />
+          </View>
+          <View style={{width: 200}}>
+            <Text>End Time: {endTime}</Text>
+            <DateTimePicker
+              style={{width: '45vw'}}
+              onChange={(selectedTime) => this.handleEndTimePicked(selectedTime)}
+              value={selectedEndTime || new Date()}
+            />  
+          </View>
+        </View>
       </View>
     );
   }
@@ -104,6 +109,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     marginTop: 100,
+  },
+  dateContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 12,
   },
   button: {
     backgroundColor: '#191919',

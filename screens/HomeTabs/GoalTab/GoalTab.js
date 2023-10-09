@@ -1,30 +1,36 @@
 import { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Progress from 'react-native-progress';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from '../../../firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { GoalTabStyles } from './GoalTabStyle';
+import { 
+  View,
+  Text, 
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+ } from 'react-native';
 
 const GoalTab = () => {
   const navigation = useNavigation();
   const [accomplishedGoals, setAccomplishedGoals] = useState([]); 
   const [unaccomplishedGoals, setUnaccomplishedGoals] = useState([]); 
-  const user = auth.currentUser
+  const authUser = auth.currentUser
 
   useEffect(() => {
     const fetchGoals = async () => {
-      if (user) {
+      if (authUser) {
         const accomplishedQuery = query(collection(db, 'goals'), 
-          where('userId', '==', user.uid),
+          where('userId', '==', authUser.uid),
           where('status', '==', 'accomplished')
         );
         const accomplishedSnapshot = await getDocs(accomplishedQuery);
         const accomplishedGoals = accomplishedSnapshot.docs.map(doc => doc.data());
 
         const unaccomplishedQuery = query(collection(db, 'goals'), 
-          where('userId', '==', user.uid),
+          where('userId', '==', authUser.uid),
           where('status', '==', 'unaccomplished')
         );
         const unaccomplishedSnapshot = await getDocs(unaccomplishedQuery);
@@ -51,62 +57,77 @@ const GoalTab = () => {
           </TouchableOpacity>
           <Text style={GoalTabStyles.subtitle}>Accomplished Goals</Text>
           <View style={GoalTabStyles.cardGoalContainer}>
-            {accomplishedGoals.length === 0 ?
-            <Text>No accomplished goals yet complete a goal</Text> :
-            accomplishedGoals.map((goal, index) => (
-              <TouchableOpacity key={index} style={GoalTabStyles.cardGoal}
-                onPress={() => navigation.push("GoalScreen", {
-                  title: goal.title,
-                  description: goal.description,
-                  percentage: goal.percentage,
-                  imgUrl: goal.imgUrl,
-
-                })}>
-                <View style={GoalTabStyles.cardGoalLabel}>
-                  <View style={GoalTabStyles.cardGoalText}>
-                    <Text style={GoalTabStyles.cardGoalTitle}>{goal.title}</Text>
-                    <Text>{goal.description}</Text>
-                    <Progress.Bar
-                      progress={goal.percentage}
-                      size={30}
-                      color='#191919'
-                      style={{ backgroundColor: 'transparent' }}
-                    />
+          <FlatList
+              data={accomplishedGoals}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  key={index}
+                  style={GoalTabStyles.cardGoal}
+                  onPress={() =>
+                    navigation.push('GoalScreen', {
+                      title: item.title,
+                      description: item.description,
+                      percentage: item.percentage,
+                      imgUrl: item.imgUrl,
+                    })
+                  }
+                >
+                  <View style={GoalTabStyles.cardGoalLabel}>
+                    <View style={GoalTabStyles.cardGoalText}>
+                      <Text style={GoalTabStyles.cardGoalTitle}>{item.title}</Text>
+                      <Text>{item.description}</Text>
+                      <Progress.Bar
+                        progress={item.percentage}
+                        size={30}
+                        color="#191919"
+                        style={{ backgroundColor: 'transparent' }}
+                      />
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            ))}
+                </TouchableOpacity>
+              )}
+              ListEmptyComponent={() => (
+                <Text>No accomplished goals yet. Complete a goal.</Text>
+              )}
+            />
           </View>
 
           <Text style={GoalTabStyles.subtitle}>Unaccomplished Goals</Text>
-          <View style={GoalTabStyles.cardGoalContainer}>
-            {unaccomplishedGoals.length === 0 ?
-            <Text>No goals yet create a goal to start your fitness journey</Text> :
-            unaccomplishedGoals.map((goal, index) => (
-              <TouchableOpacity key={index} style={GoalTabStyles.cardGoal}
-                onPress={() => navigation.push("GoalScreen", {
-                  title: goal.title,
-                  description: goal.description,
-                  percentage: goal.percentage,
-                  imgUrl: goal.imgUrl,
-
-                })}>
+          <FlatList
+            data={unaccomplishedGoals}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                key={index}
+                style={GoalTabStyles.cardGoal}
+                onPress={() =>
+                  navigation.push('GoalScreen', {
+                    title: item.title,
+                    description: item.description,
+                    percentage: item.percentage,
+                    imgUrl: item.imgUrl,
+                  })
+                }
+              >
                 <View style={GoalTabStyles.cardGoalLabel}>
-                  <View style={GoalTabStyles}>
-                    <Text style={GoalTabStyles.cardGoalTitle}>{goal.title}</Text>
-                    <Text>{goal.description}</Text>
+                  <View style={GoalTabStyles.cardGoalText}>
+                    <Text style={GoalTabStyles.cardGoalTitle}>{item.title}</Text>
+                    <Text>{item.description}</Text>
                     <Progress.Bar
-                      progress={goal.percentage}
+                      progress={item.percentage}
                       size={30}
-                      color='#191919'
-                      style={{ backgroundColor: 'transparent' ,marginTop:5}}
+                      color="#191919"
+                      style={{ backgroundColor: 'transparent', marginTop: 5 }}
                     />
                   </View>
                 </View>
               </TouchableOpacity>
-            ))}
-          </View>
-
+            )}
+            ListEmptyComponent={() => (
+              <Text>No goals yet. Create a goal to start your fitness journey.</Text>
+            )}
+          />
         </View>
         
       </ScrollView>

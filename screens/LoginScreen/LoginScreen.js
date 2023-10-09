@@ -1,7 +1,7 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { auth, signInwithGoogle } from '../../firebase';
-import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail, } from "firebase/auth";
 import { useNavigation } from '@react-navigation/core';
 import { LoginStyles } from './LoginStyle';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,8 +23,12 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [forgotEmail, setForgotEmail] = useState("")
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const navigation = useNavigation();
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   const handleLogin = async () => {
     await signInWithEmailAndPassword(auth, email, password)
@@ -48,19 +52,6 @@ const LoginScreen = () => {
     })
   }
 
-
-  useEffect(() => {
-    const listen = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        await navigation.replace("HomeScreen");
-      } 
-    })
-    
-    return () => {
-      listen();
-    }
-  },);
-
   return (
     <SafeAreaView style={LoginStyles.container}>
       <KeyboardAvoidingView>
@@ -78,13 +69,22 @@ const LoginScreen = () => {
             placeholder='Enter your email'
             onChangeText={text => setEmail(text)}
           />
-          <TextInput
-            style={LoginStyles.input}
-            value={password}
-            secureTextEntry={true}
-            placeholder='Enter your password'
-            onChangeText={text => setPassword(text)}
-          />
+          <View style={LoginStyles.passwordInput}>
+            <TextInput
+              style={{width: "100%"}}
+              value={password}
+              secureTextEntry={!passwordVisible}
+              placeholder='Enter your password'
+              onChangeText={text => setPassword(text)}
+            />
+            <TouchableOpacity onPress={togglePasswordVisibility} style={LoginStyles.iconContainer}>
+              <Ionicons
+                name={passwordVisible ? 'eye-off' : 'eye'}
+                size={20}
+                color={passwordVisible ? 'gray' : 'black'}
+              />
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Text style={LoginStyles.forgotText}>Forgot Password?</Text>
             </TouchableOpacity>

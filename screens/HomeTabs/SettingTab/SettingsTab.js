@@ -2,8 +2,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AccountSettingsList } from '../../../data/AccountSettingsList';
 import { useState, useEffect } from 'react';
 import { auth , db} from '../../../firebase';
-import { onAuthStateChanged, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
-import { useNavigation } from '@react-navigation/core';
+import { signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { settingStyles } from './SettingStyle';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -28,12 +27,10 @@ import {
 
 
 const SettingsTab = () => {
-  const navigation = useNavigation();
-  const [authUser, setAuthUser] = useState();
   const [userData, setUserData] = useState();
   const [changeInfoModalVisible, setChangeInfoModalVisible] = useState(false);
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
-
+  const authUser = auth.currentUser
 
   const fetchUserData = async () => {
     try {
@@ -95,19 +92,9 @@ const SettingsTab = () => {
   
   useEffect(() => {
   
-    const listen = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setAuthUser(user);
-        await fetchUserData();
-      } else {
-        await setAuthUser(null);
-        navigation.replace('LoginScreen');
-      }
-    });
-  
-    return () => {
-      listen();
-    };
+
+    fetchUserData();
+
   }, [authUser]);
 
   

@@ -29,8 +29,8 @@ const HomeNavigation = () => {
             }
             else if (route.name === 'DietTab') {
               iconName = focused 
-              ? 'person-circle'
-              : 'person-circle-outline';
+              ? 'fitness'
+              : 'fitness-outline';
             }
             else if (route.name === 'SettingsTab') {
               iconName = focused 

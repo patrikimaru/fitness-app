@@ -4,13 +4,14 @@ import { getFirestore } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
  
 const firebaseConfig = {
-  apiKey: "AIzaSyCL1giuajreNL7MaAlISBR_gr5AsmYW2p0",
-  authDomain: "capstone-third-year.firebaseapp.com",
-  projectId: "capstone-third-year",
-  storageBucket: "capstone-third-year.appspot.com",
-  messagingSenderId: "1037621155883",
-  appId: "1:1037621155883:web:29c3209aefc5fe7cb2b26e",
-  measurementId: "G-7GJBMSK190"
+  apiKey: "AIzaSyBcH9t-6624PdXh1n8q8qy81ehMXZ1NL2w",
+  authDomain: "fittrack-f1516.firebaseapp.com",
+  databaseURL: "https://fittrack-f1516-default-rtdb.firebaseio.com",
+  projectId: "fittrack-f1516",
+  storageBucket: "fittrack-f1516.appspot.com",
+  messagingSenderId: "447775930741",
+  appId: "1:447775930741:web:bf252916d12926af997b3c",
+  measurementId: "G-LFFJBG3WWD"
 };
 
 const app = initializeApp(firebaseConfig);

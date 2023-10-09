@@ -15,7 +15,8 @@ export const settingStyles = StyleSheet.create({
     height: 150,
     borderRadius: 300,
     marginVertical: 20,
-    backgroundColor: '#191919'
+    borderWidth: 1,
+    borderColor: "#191919"
   },
   cardContainer: {
     display: 'flex',

@@ -28,6 +28,14 @@ export const LoginStyles = StyleSheet.create({
     backgroundColor: '#fafafa',
     borderRadius: 8
   },
+  passwordInput: {
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: '#fafafa',
+    marginTop: 8,
+    borderRadius: 8,
+    padding: 12,
+  },
   loginBtn: {
     marginTop: 20,
     display: 'flex',

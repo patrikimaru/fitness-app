@@ -1,3 +1,4 @@
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/core';
 import { auth, db } from '../../firebase';
 import { useState, useEffect } from 'react';
@@ -16,9 +17,18 @@ import {
 
 
 const SignUpScreen = () => {
-  const [authUser, setAuthUser] = useState(null);
   const navigation = useNavigation();
-  
+
+  const [authUser, setAuthUser] = useState(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!confirmPasswordVisible);
+  };
   const handleSignUp = async (values) => {
     const { firstName, lastName ,email, password } = values;
 
@@ -47,6 +57,9 @@ const SignUpScreen = () => {
 
   return (
       <SafeAreaView style={SignUpStyles.container}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back-outline" size={25}/>
+        </TouchableOpacity>
           <Text style={SignUpStyles.title}>Create Account</Text>
           <Text>Sign up now to gain access in our app!</Text>
             <Formik
@@ -90,26 +103,44 @@ const SignUpScreen = () => {
                 <Text style={SignUpStyles.errorText}>{errors.email}</Text>
                 ) : null}
               <Text>Password</Text>
-              <TextInput
-                style={SignUpStyles.input}
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
-                placeholder='Password must be atleast 6 characters'
-                secureTextEntry={true}
-              />
+              <View style={SignUpStyles.passwordInput}>
+                <TextInput
+                  style={{width: '100%'}}
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  value={values.password}
+                  placeholder='Password must be atleast 6 characters'
+                  secureTextEntry={!passwordVisible}
+                />
+                <TouchableOpacity onPress={togglePasswordVisibility}>
+                  <Ionicons
+                    name={passwordVisible ? 'eye-off' : 'eye'}
+                    size={20}
+                    color={passwordVisible ? 'gray' : 'black'}
+                  />
+                </TouchableOpacity>
+              </View>
               {errors.password && touched.password ? (
                 <Text style={SignUpStyles.errorText}>{errors.password}</Text>
                 ) : null}
               <Text>Confirm Password</Text>
-              <TextInput
-                style={SignUpStyles.input}
-                onChangeText={handleChange('confirmPassword')}
-                onBlur={handleBlur('confirmPassword')}
-                value={values.confirmPassword}
-                placeholder='Password must match'
-                secureTextEntry={true}
-              />
+              <View style={SignUpStyles.passwordInput}>
+                <TextInput
+                  style={{width: '100%'}}
+                  onChangeText={handleChange('confirmPassword')}
+                  onBlur={handleBlur('confirmPassword')}
+                  value={values.confirmPassword}
+                  placeholder='Password must match'
+                  secureTextEntry={!confirmPasswordVisible}
+                />
+                <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
+                  <Ionicons
+                    name={confirmPasswordVisible ? 'eye-off' : 'eye'}
+                    size={20}
+                    color={confirmPasswordVisible ? 'gray' : 'black'}
+                  />
+                </TouchableOpacity>
+              </View>
               {errors.confirmPassword && touched.confirmPassword ? (
                 <Text style={SignUpStyles.errorText}>{errors.confirmPassword}</Text>
                 ) : null}

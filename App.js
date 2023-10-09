@@ -1,6 +1,8 @@
-import React from 'react';
+import { useEffect, useState } from 'react'; // Import useState
+import { auth } from './firebase';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { onAuthStateChanged } from 'firebase/auth';
 import LoginScreen from './screens/LoginScreen/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen/SignUpScreen';
 import AddGoalScreen from './screens/AddGoalScreen/AddGoalScreen';
@@ -13,21 +15,32 @@ import AddDietPlanScreen from './screens/AddDietPlanScreen/AddDietPlanScreen';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const listen = onAuthStateChanged(auth, async (user) => {
+      setIsUserLoggedIn(user);
+    });
+
+    return () => {
+      listen();
+    };
+  }, [isUserLoggedIn]);
+
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={LoginScreen} /> 
-        <Stack.Screen options={{ headerShown: false }} name="SignUpScreen" component={SignUpScreen} />  
+      <Stack.Navigator initialRouteName={isUserLoggedIn ? 'HomeScreen' : 'LoginScreen'}>
+        <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="SignUpScreen" component={SignUpScreen} />
         <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeNavigation} />
         <Stack.Screen options={{ headerShown: false }} name="AddGoalScreen" component={AddGoalScreen} />
-        <Stack.Screen options={{ headerShown: false }} name="AddDietPlanScreen" component={AddDietPlanScreen} />  
-        <Stack.Screen options={{ headerShown: false }} name="GoalScreen" component={GoalScreen} /> 
+        <Stack.Screen options={{ headerShown: false }} name="AddDietPlanScreen" component={AddDietPlanScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="GoalScreen" component={GoalScreen} />
         <Stack.Screen options={{ headerShown: false }} name="ProfileScreen" component={ProfileScreen} />
-        <Stack.Screen options={{ headerShown: false }} name="NotificationScreen" component={NotificationScreen} />  
+        <Stack.Screen options={{ headerShown: false }} name="NotificationScreen" component={NotificationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
-  )};
-
-
+  );
+};
 
 export default App;
