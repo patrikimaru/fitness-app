@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "fitness-app",
+    "slug": "fitness-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/splash.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/splash.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.patriki.fitnessapp"
+    },
+    "web": {
+      "favicon": "./assets/splash.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9b78dc82-61bd-43ad-b43d-60ebb42e16c3"
+      }
+    }
+  }
+}
