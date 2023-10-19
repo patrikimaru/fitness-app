@@ -57,7 +57,7 @@ const HomeTab = () => {
     };
 
     fetchData();
-  }, [userGoals]);
+  }, [authUser]);
 
 
   return (

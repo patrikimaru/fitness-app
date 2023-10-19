@@ -1,11 +1,13 @@
+import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AccountSettingsList } from '../../../data/AccountSettingsList';
 import { useState, useEffect } from 'react';
-import { auth , db} from '../../../firebase';
+import { auth , db, storage } from '../../../firebase';
 import { signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { settingStyles } from './SettingStyle';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { Formik } from 'formik';
 import {
   Text,
@@ -27,10 +29,54 @@ import {
 
 
 const SettingsTab = () => {
-  const [userData, setUserData] = useState();
+  const [image,setImage] = useState(null)
+  const [userData, setUserData] = useState(null);
   const [changeInfoModalVisible, setChangeInfoModalVisible] = useState(false);
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
   const authUser = auth.currentUser
+
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+  
+    if (!result.cancelled) {
+      const source = { uri: result.uri };
+      console.log('Image Source:', source);
+      setImage(source);
+  
+      const storageRef = ref(storage, `user-profiles/${authUser.uid}/profile-picture.jpg`);
+      const uploadTask = uploadBytesResumable(storageRef, result.uri);
+  
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+        },
+        (error) => {
+          console.error("Error uploading image: ", error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            const userDocRef = doc(db, "users", authUser.uid);
+            setDoc(userDocRef, { profilePicture: downloadURL }, { merge: true })
+              .then(() => {
+                alert("Image uploaded and URL stored in Firestore.");
+              })
+              .catch((error) => {
+                console.error("Error storing download URL in Firestore: ", error);
+              });
+          });
+        }
+      );
+    }
+  };
+  
+  
+  
 
   const fetchUserData = async () => {
     try {
@@ -51,6 +97,7 @@ const SettingsTab = () => {
       console.error('Error fetching user data:', error);
     }
   };
+  
   
 
   const handleChangeInfo = async (values) => {
@@ -91,7 +138,6 @@ const SettingsTab = () => {
   }
   
   useEffect(() => {
-  
 
     fetchUserData();
 
@@ -105,10 +151,18 @@ const SettingsTab = () => {
     <SafeAreaView style={settingStyles.container}>
       <ScrollView style={settingStyles.scrollView}>
           <View style={settingStyles.container}>
+          <TouchableOpacity onPress={pickImage}>
             <Image
               style={settingStyles.userProfile}
-              source={{uri: 'https://i.stack.imgur.com/l60Hf.png'}} 
+              source={
+                image
+                  ? { uri: image.uri }
+                  : { uri: userData ? userData.profilePicture || 'https://i.stack.imgur.com/l60Hf.png' : 'https://i.stack.imgur.com/l60Hf.png' }
+              }
             />
+          </TouchableOpacity>
+
+
             <Text style={settingStyles.title}>
               {userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...'}
             </Text>

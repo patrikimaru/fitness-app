@@ -1,104 +1,74 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import DateTimePicker from 'react-datetime-picker';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
 
 export default class Calendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedStartDate: null,
-      selectedStartTime: null,
-      selectedEndTime: null,
-      isStartTimePickerVisible: false,
-      isEndTimePickerVisible: false,
+      startTime: '', // Initialize with empty values
+      endTime: '', // Initialize with empty values
+      selectedStartTime: null, // To store selected start time
+      selectedEndTime: null, // To store selected end time
     };
   }
 
-  onDateChange(date) {
+  handleStartTimeChange = (time) => {
+    this.setState({ startTime: time });
+  };
+
+  handleEndTimeChange = (time) => {
+    this.setState({ endTime: time });
+  };
+
+  handleSetTimes = () => {
+    const { startTime, endTime } = this.state;
+    
+    // You can add validation and formatting as needed
+    
     this.setState({
-      selectedStartDate: date,
-      selectedStartTime: null,
-      selectedEndTime: null,
+      selectedStartTime: startTime,
+      selectedEndTime: endTime,
     });
-  }
-
-
-  hideStartTimePicker() {
-    this.setState({ isStartTimePickerVisible: false });
-  }
-
-  hideEndTimePicker() {
-    this.setState({ isEndTimePickerVisible: false });
-  }
-
-  handleStartTimePicked(time) {
-    this.setState({ selectedStartTime: time });
-    this.hideStartTimePicker();
-  }
-
-  handleEndTimePicked(time) {
-    this.setState({ selectedEndTime: time });
-    this.hideEndTimePicker();
-
-    const currentTime = new Date();
-    const selectedEndTime = new Date(time);
-
-    if (selectedEndTime.getTime() === currentTime.getTime()) {
-      alert('The goal has ended at the selected end time.');
-    }
-  }
-
-  handleSetTimes() {
-    const { selectedStartTime, selectedEndTime } = this.state;
-    if (!selectedStartTime || !selectedEndTime) {
-      alert('Please select a date, start time, and end time.');
-      return;
-    }
-
-    alert('Times have been selected and can be used for further processing.');
-  }
+  };
 
   render() {
-    const { selectedStartDate, selectedStartTime, selectedEndTime } = this.state;
-    const startDate = selectedStartDate ? selectedStartDate.toString() : '';
-    const startTime = selectedStartTime ? selectedStartTime.toString() : 'Select Start Time';
-    const endTime = selectedEndTime ? selectedEndTime.toString() : 'Select End Time';
+    const { startTime, endTime, selectedStartTime, selectedEndTime } = this.state;
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.handleSetTimes()}
-        >
-            <Text style={styles.buttonText}>Set Times</Text>
+        <TouchableOpacity style={styles.button} onPress={() => this.handleSetTimes()}>
+          <Text style={styles.buttonText}>Set Times</Text>
         </TouchableOpacity>
+
         <View>
-          <Text>SELECTED DATE: {startDate}</Text>
-        </View>
-        <View style={styles.dateContainer}>
-          <View style={{width: 200}}>
-            <Text>Start Time: {startTime}</Text>
-            <DateTimePicker
-              style={{width: '45vw'}}
-              onChange={(selectedTime) => this.handleStartTimePicked(selectedTime)}
-              value={selectedStartTime || new Date()}
+          <View style={{ width: 200 }}>
+            <Text>Start Time:</Text>
+            <TextInput
+              value={startTime}
+              placeholder="Select Start Time"
+              onChangeText={(text) => this.handleStartTimeChange(text)}
             />
           </View>
-          <View style={{width: 200}}>
-            <Text>End Time: {endTime}</Text>
-            <DateTimePicker
-              style={{width: '45vw'}}
-              onChange={(selectedTime) => this.handleEndTimePicked(selectedTime)}
-              value={selectedEndTime || new Date()}
-            />  
+
+          <View style={{ width: 200 }}>
+            <Text>End Time:</Text>
+            <TextInput
+              value={endTime}
+              placeholder="Select End Time"
+              onChangeText={(text) => this.handleEndTimeChange(text)}
+            />
           </View>
         </View>
+
+        {selectedStartTime && selectedEndTime && (
+          <View>
+            <Text>Selected Start Time: {selectedStartTime}</Text>
+            <Text>Selected End Time: {selectedEndTime}</Text>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Mark as done</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   }
@@ -110,21 +80,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginTop: 100,
   },
-  dateContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 12,
-  },
   button: {
     backgroundColor: '#191919',
     padding: 10,
     alignItems: 'center',
     marginBottom: 10,
-    borderRadius:12
+    borderRadius: 12,
   },
   buttonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });

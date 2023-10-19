@@ -55,7 +55,7 @@ const ProfileScreen = () => {
       </TouchableOpacity>
       <View style={ProfileStyle.profileContainer}>
         <Image
-            source={{uri: 'https://i.stack.imgur.com/l60Hf.png'}} 
+            source={{uri: userData.profilePicture}} 
             style={ProfileStyle.profileImage}
           />
       </View>
