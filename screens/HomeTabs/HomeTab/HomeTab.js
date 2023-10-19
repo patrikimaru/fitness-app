@@ -32,7 +32,8 @@ const HomeTab = () => {
     const fetchData = async () => {
       if (authUser) {
         try {
-          const q = query(collection(db, 'goals'), where('userId', '==', authUser.uid));
+          const q = query(collection(db, 'goals'), 
+          where('userId', '==', authUser.uid));
           const querySnapshot = await getDocs(q);
 
           const goals = [];
@@ -57,7 +58,7 @@ const HomeTab = () => {
     };
 
     fetchData();
-  }, [authUser]);
+  },);
 
 
   return (

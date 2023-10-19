@@ -8,6 +8,7 @@ import { settingStyles } from './SettingStyle';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useNavigation } from '@react-navigation/core';
 import { Formik } from 'formik';
 import {
   Text,
@@ -29,6 +30,7 @@ import {
 
 
 const SettingsTab = () => {
+  const navigation = useNavigation();
   const [image,setImage] = useState(null)
   const [userData, setUserData] = useState(null);
   const [changeInfoModalVisible, setChangeInfoModalVisible] = useState(false);
@@ -141,12 +143,9 @@ const SettingsTab = () => {
 
     fetchUserData();
 
-  }, [authUser]);
+  }, []);
 
   
-
-  
-
   return (
     <SafeAreaView style={settingStyles.container}>
       <ScrollView style={settingStyles.scrollView}>
@@ -157,7 +156,7 @@ const SettingsTab = () => {
               source={
                 image
                   ? { uri: image.uri }
-                  : { uri: userData ? userData.profilePicture || 'https://i.stack.imgur.com/l60Hf.png' : 'https://i.stack.imgur.com/l60Hf.png' }
+                  : { uri: 'https://i.stack.imgur.com/l60Hf.png' }
               }
             />
           </TouchableOpacity>
@@ -191,7 +190,11 @@ const SettingsTab = () => {
               ))}
             </View>
           </View>
-          <TouchableOpacity style={settingStyles.logoutBtn} onPress={() => signOut(auth) }>
+          <TouchableOpacity style={settingStyles.logoutBtn} onPress={() => {
+            alert("Are you sure you want to logout?")
+            signOut(auth); 
+            navigation.replace("LoginScreen")
+            }}>
             <Text style={settingStyles.logoutText}>Logout</Text>
           </TouchableOpacity>
       </ScrollView>

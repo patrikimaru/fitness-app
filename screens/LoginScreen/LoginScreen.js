@@ -1,7 +1,7 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { auth, signInwithGoogle } from '../../firebase';
-import { signInWithEmailAndPassword, sendPasswordResetEmail, } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "firebase/auth";
 import { useNavigation } from '@react-navigation/core';
 import { LoginStyles } from './LoginStyle';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,6 +24,7 @@ const LoginScreen = () => {
   const [forgotEmail, setForgotEmail] = useState("")
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [authUser, setAuthUser] = useState(null);
   const navigation = useNavigation();
 
   const togglePasswordVisibility = () => {
@@ -34,6 +35,7 @@ const LoginScreen = () => {
     await signInWithEmailAndPassword(auth, email, password)
     .then(() => {
       alert("You have succesfully logged in");
+      navigation.replace("HomeScreen")
     })
     .catch((error) => {
       alert(error); 
@@ -51,6 +53,19 @@ const LoginScreen = () => {
       alert(error)
     })
   }
+
+  useEffect(() => {
+    const listen = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAuthUser(user);
+        navigation.replace("HomeScreen");
+      } 
+    })
+      
+    return () => {
+      listen();
+    }
+  }, []);
 
   return (
     <SafeAreaView style={LoginStyles.container}>

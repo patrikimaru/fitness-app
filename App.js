@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'; // Import useState
+import { useEffect, useState } from 'react'; 
 import { auth } from './firebase';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -15,21 +15,10 @@ import AddDietPlanScreen from './screens/AddDietPlanScreen/AddDietPlanScreen';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const listen = onAuthStateChanged(auth, async (user) => {
-      setIsUserLoggedIn(user);
-    });
-
-    return () => {
-      listen();
-    };
-  }, [isUserLoggedIn]);
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={isUserLoggedIn ? 'HomeScreen' : 'LoginScreen'}>
+      <Stack.Navigator initialRouteName='LoginScreen'>
         <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={LoginScreen} />
         <Stack.Screen options={{ headerShown: false }} name="SignUpScreen" component={SignUpScreen} />
         <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeNavigation} />

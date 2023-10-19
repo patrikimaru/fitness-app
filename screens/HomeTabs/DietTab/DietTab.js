@@ -35,7 +35,6 @@ const DietTab = () => {
           const dietPlanSnapshot = await getDocs(dietPlanQuery);
           const dietPlanData = dietPlanSnapshot.docs.map((doc) => doc.data());
 
-          // Update the diet plan data to include the healthiness of each food item
           const dietPlanWithHealth = dietPlanData.map((plan) => ({
             ...plan,
             itemsWithHealth: plan.items.map((item) => ({
@@ -52,7 +51,7 @@ const DietTab = () => {
     };
 
     fetchDietPlans();
-  }, [authUser]);
+  });
 
   return (
     <SafeAreaView>
@@ -72,20 +71,26 @@ const DietTab = () => {
             Create a new diet plan +
           </Text>
         </TouchableOpacity>
-        <FlatList
-          data={dietPlans}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={DietTabStyles.cardGoal}>
-              <Text style={DietTabStyles.mealTitle}>{item.title}</Text>
-              {item.itemsWithHealth.map((mealItem, index) => (
-                <Text key={index}>
-                  {mealItem.name} - {mealItem.health}
-                </Text>
-              ))}
-            </View>
-          )}
-        />
+        {dietPlans.length > 0 ? (
+          <FlatList
+            data={dietPlans}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={DietTabStyles.cardGoal}>
+                <Text style={DietTabStyles.mealTitle}>{item.title}</Text>
+                {item.itemsWithHealth.map((mealItem, index) => (
+                  <Text key={index}>
+                    {mealItem.name} - {mealItem.health}
+                  </Text>
+                ))}
+              </View>
+            )}
+          />
+        ) : (
+          <Text style={{ textAlign: "center", fontSize: 18 }}>
+            You have no diet plans
+          </Text>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
