@@ -95,40 +95,38 @@ const HomeTab = () => {
               </TouchableOpacity>
             </View>
             
-            <FlatList
-              data={userGoals}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={HomeStyles.cardGoal}
-                  onPress={() =>
-                    navigation.push('GoalScreen', {
-                      title: item.title,
-                      category: item.category,
-                      description: item.description,
-                      percentage: item.progress, 
-                    })
-                  }
-                >
-                  <View style={HomeStyles.cardGoalLabel}>
-                    <View style={HomeStyles.cardGoalText}>
-                      <Text style={HomeStyles.cardGoalTitle}>
-                        {item.title.length > 12
-                          ? item.title.slice(0, 17 - 3) + '...'
-                          : item.title}
-                      </Text>
-                      <Text>{item.category}</Text>
+            {
+              userGoals.length === 0 ? 
+              <Text>You have no goals!</Text> :
+              <FlatList
+                data={userGoals}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={HomeStyles.cardGoal}
+                    onPress={() =>
+                      navigation.push('GoalScreen', {
+                        title: item.title,
+                        category: item.category,
+                        description: item.description,
+                        percentage: item.progress, 
+                      })
+                    }
+                  >
+                    <View style={HomeStyles.cardGoalLabel}>
+                      <View style={HomeStyles.cardGoalText}>
+                        <Text style={HomeStyles.cardGoalTitle}>
+                          {item.title.length > 12
+                            ? item.title.slice(0, 17 - 3) + '...'
+                            : item.title}
+                        </Text>
+                        <Text>{item.category}</Text>
+                      </View>
                     </View>
-                  </View>
-                  <Progress.Bar
-                    progress={item.progress}
-                    size={30}
-                    color="#191919"
-                    style={{ backgroundColor: 'transparent' }}
-                  />
-                </TouchableOpacity>
-              )}
-            />
+                  </TouchableOpacity>
+                )}
+              />
+            }
           </View>
          </View>
       </ScrollView>

@@ -77,12 +77,6 @@ const GoalTab = () => {
                     <View style={GoalTabStyles.cardGoalText}>
                       <Text style={GoalTabStyles.cardGoalTitle}>{item.title}</Text>
                       <Text>{item.description}</Text>
-                      <Progress.Bar
-                        progress={item.percentage}
-                        size={30}
-                        color="#191919"
-                        style={{ backgroundColor: 'transparent' }}
-                      />
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -114,12 +108,6 @@ const GoalTab = () => {
                   <View style={GoalTabStyles.cardGoalText}>
                     <Text style={GoalTabStyles.cardGoalTitle}>{item.title}</Text>
                     <Text>{item.description}</Text>
-                    <Progress.Bar
-                      progress={item.percentage}
-                      size={30}
-                      color="#191919"
-                      style={{ backgroundColor: 'transparent', marginTop: 5 }}
-                    />
                   </View>
                 </View>
               </TouchableOpacity>

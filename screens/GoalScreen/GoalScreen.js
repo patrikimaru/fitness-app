@@ -23,15 +23,6 @@ const GoalScreen = ({ route }) => {
         <Text style={GoalScreenStyles.title}>{title}</Text>
         <Text style={GoalScreenStyles.category}>{category}</Text>
         <Text style={GoalScreenStyles.description}>{description}</Text>
-
-        <Text>Progress: </Text>
-        <Progress.Bar
-          progress={percentage}
-          size={30}
-          color='#191919'
-          style={GoalScreenStyles.progressBar}
-        />
-
         <Calendar/>
       </ScrollView>
       

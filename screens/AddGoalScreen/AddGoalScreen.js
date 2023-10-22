@@ -24,7 +24,7 @@ const AddGoalScreen = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [formValid, setFormValid] = useState(false);
-  const categories = [ "Eating healthy", "Outside Activities", "Indoor Activities",];
+  const categories = [ "Eating healthy", "Outdoor Activities", "Indoor Activities",];
 
   useEffect(() => {
     setFormValid(title.trim() !== "" && category !== "" && description.trim() !== "");
@@ -32,8 +32,6 @@ const AddGoalScreen = () => {
 
   const handleCreateGoal = async () => {
     try {
-
-
       const goalQuery = query(collection(db, "goals"), where("title", "==", title));
       const querySnapshot = await getDocs(goalQuery);
 
